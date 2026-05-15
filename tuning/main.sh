@@ -72,6 +72,7 @@ apply_permissions() {
 		con=$(stat -c %C "$orig" 2>/dev/null)
 
 		if [ -z "$con" ] || [ "$con" = "?" ]; then
+			# shellcheck disable=SC2012
 			con=$(ls -dZ "$orig" 2>/dev/null | awk '{print $1}')
 		fi
 
@@ -81,12 +82,14 @@ apply_permissions() {
 			orig_dir=$(dirname "$orig")
 			
 			if [ "$ext" = "none" ]; then
+				# shellcheck disable=SC2012
 				con=$(ls -Z "$orig_dir" 2>/dev/null | awk '
 					!/^d/ && $1 != "?" && $1 != "" {
 						c[$1]++; 
 						if(c[$1] > max) { max = c[$1]; res = $1 }
 					} END { print res }')
 			else
+				# shellcheck disable=SC2012
 				con=$(ls -Z "$orig_dir/"*."$ext" 2>/dev/null | awk '
 					$1 != "?" && $1 != "" {
 						c[$1]++; 
@@ -111,6 +114,7 @@ apply_permissions() {
 			 log_con="Failed to determine context"
 		fi
 	else
+		# shellcheck disable=SC2012
 		log_con=$(ls -dZ "$target" 2>/dev/null | awk '{print $1}')
 	fi
 

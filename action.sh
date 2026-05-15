@@ -144,7 +144,7 @@ if [ "$IS_FLASHING" = "false" ]; then
     fi
     
     # Restart Dolby Service
-    DLBSERV=$(find /*/bin/hw -type f -name '*dolby*')
+    DLBSERV=$(find /*/bin/hw -type f -name '*dms*' -o -name '*dolby*' 2>/dev/null | grep -v "c2@")
     if [ -n "$DLBSERV" ]; then
         printf "%b\n" "$DLBSERV" | while IFS= read -r SERV; do
             if [ -s "$SERV" ]; then
