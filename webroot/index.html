@@ -141,18 +141,18 @@
 				<span id="hieq-default" class="default-value">(Default: Balanced)</span>
 			</div>
 			<div id="hieqCustomInput" class="select-container">
-			    <div id="hieqCustomBaseContainer" class="input-group" style="margin-bottom: 1rem; border-bottom: 1px solid #555; padding-bottom: 10px;">
-			        <label for="hieqCustomBase" data-lang-key="load_base">Load Base:</label>
-			        <div style="display: flex; gap: 10px;">
-			            <select id="hieqCustomBase" style="flex-grow: 1;">
-			                <option value="" disabled selected data-lang-key="select_placeholder">-- Select --</option>
-			                <option value="B" data-lang-key="balanced">Balanced</option>
-			                <option value="D" data-lang-key="detailed">Detailed</option>
-			                <option value="W" data-lang-key="warm">Warm</option>
-			            </select>
-			            <button id="resetHCustomBase" style="padding: 5px 10px; cursor: pointer;" title="Reset to Template">↺</button>
-			        </div>
-		        </div>
+				<div id="hieqCustomBaseContainer" class="input-group" style="margin-bottom: 1rem; border-bottom: 1px solid #555; padding-bottom: 10px;">
+					<label for="hieqCustomBase" data-lang-key="load_base">Load Base:</label>
+					<div style="display: flex; gap: 10px;">
+						<select id="hieqCustomBase" style="flex-grow: 1;">
+							<option value="" disabled selected data-lang-key="select_placeholder">-- Select --</option>
+							<option value="B" data-lang-key="balanced">Balanced</option>
+							<option value="D" data-lang-key="detailed">Detailed</option>
+							<option value="W" data-lang-key="warm">Warm</option>
+						</select>
+						<button id="resetHCustomBase" style="padding: 5px 10px; cursor: pointer;" title="Reset to Template">↺</button>
+					</div>
+				</div>
 				<label for="hieqCustomValues" data-lang-key="custom_ieq_val" style="margin-bottom: 1rem";>Custom IEQ Targets:</label>
 				<div class="input-group">
 					<label for="hiet47" data-lang-key="freq_47">47 Hz Target:</label>
@@ -269,9 +269,9 @@
 					<span id="heqpreset-default" class="default-value"></span>
 				</div>
 				<div class="sticky-action-bar">
-				    <button id="slidershrinkheq" data-lang-key="shrink_sliders">Shrink sliders</button>
-				    <button id="sliderexpandheq" data-lang-key="expand_sliders">Expand sliders</button>
-				    <button id="resetCustomEqheq" data-lang-key="reset_custom_eq">Reset Custom Equalizer</button>
+					<button id="slidershrinkheq" data-lang-key="shrink_sliders">Shrink sliders</button>
+					<button id="sliderexpandheq" data-lang-key="expand_sliders">Expand sliders</button>
+					<button id="resetCustomEqheq" data-lang-key="reset_custom_eq">Reset Custom Equalizer</button>
 				</div>
 				<div class="eq-sliders" id="heqCustomEqContainer">
 					<div class="slider-container">
@@ -681,32 +681,32 @@
 			<h3 data-lang-key="experimental">Experimental</h3>
 			</summary>
 			<div id="htunedrate" class="select-container">
-		    <label data-lang-key="htunedrate">Tuned Sample Rate:</label>
-		    <select id="htunedrate">
-		        <option value="44100" data-lang-key="samplerate_44100">44100 Hz</option>
-		        <option value="48000" data-lang-key="samplerate_48000">48000 Hz</option>
-		        <option value="88200" data-lang-key="samplerate_88200">88200 Hz</option>
-		        <option value="96000" data-lang-key="samplerate_96000">96000 Hz</option>
-		        <option value="176400" data-lang-key="samplerate_176400">176400 Hz</option>
-		        <option value="192000" data-lang-key="samplerate_192000">192000 Hz</option>
-		        <option value="352800" data-lang-key="samplerate_352800">352800 Hz</option>
-		        <option value="384000" data-lang-key="samplerate_384000">384000 Hz</option>
-		    </select>
-		    <span id="htunedrate-default" class="default-value">(Default: 48000)</span>
-		    </div>
-		    <div id="h_output_channel" class="select-container">
-		    <label data-lang-key="h_output_channels">Output Channels:</label>
-		    <select id="h_output_channels">
-		        <option value="1">1</option>
-		        <option value="2">2</option>
-		        <option value="4">4</option>
-		        <option value="7">7</option>
-		        <option value="8">8</option>
-		        <option value="12">12</option>
-		        <option value="14">14</option>
-		    </select>
-		    <span id="h_output_channels-default" class="default-value">(Default: 2)</span>
-	    	</div>
+			<label data-lang-key="htunedrate">Tuned Sample Rate:</label>
+			<select id="htunedrate">
+				<option value="44100" data-lang-key="samplerate_44100">44100 Hz</option>
+				<option value="48000" data-lang-key="samplerate_48000">48000 Hz</option>
+				<option value="88200" data-lang-key="samplerate_88200">88200 Hz</option>
+				<option value="96000" data-lang-key="samplerate_96000">96000 Hz</option>
+				<option value="176400" data-lang-key="samplerate_176400">176400 Hz</option>
+				<option value="192000" data-lang-key="samplerate_192000">192000 Hz</option>
+				<option value="352800" data-lang-key="samplerate_352800">352800 Hz</option>
+				<option value="384000" data-lang-key="samplerate_384000">384000 Hz</option>
+			</select>
+			<span id="htunedrate-default" class="default-value">(Default: 48000)</span>
+			</div>
+			<div id="h_output_channel" class="select-container">
+			<label data-lang-key="h_output_channels">Output Channels:</label>
+			<select id="h_output_channels">
+				<option value="1">1</option>
+				<option value="2">2</option>
+				<option value="4">4</option>
+				<option value="7">7</option>
+				<option value="8">8</option>
+				<option value="12">12</option>
+				<option value="14">14</option>
+			</select>
+			<span id="h_output_channels-default" class="default-value">(Default: 2)</span>
+			</div>
 		</details>
 	</div>
 	<div id="speaker-group" class="tuning-group">
@@ -738,18 +738,18 @@
 				<span id="sieq-default" class="default-value">(Default: Balanced)</span>
 			</div>
 			<div id="sieqCustomInput" class="select-container">
-			    <div id="sieqCustomBaseContainer" class="input-group" style="margin-bottom: 1rem; border-bottom: 1px solid #555; padding-bottom: 10px;">
-			        <label for="sieqCustomBase" data-lang-key="load_base">Load Base:</label>
-			        <div style="display: flex; gap: 10px;">
-			            <select id="sieqCustomBase" style="flex-grow: 1;">
-			                <option value="" disabled selected data-lang-key="select_placeholder">-- Select --</option>
-			                <option value="B" data-lang-key="balanced">Balanced</option>
-			                <option value="D" data-lang-key="detailed">Detailed</option>
-			                <option value="W" data-lang-key="warm">Warm</option>
-			            </select>
-			            <button id="resetSCustomBase" style="padding: 5px 10px; cursor: pointer;" title="Reset to Template">↺</button>
-			        </div>
-		        </div>
+				<div id="sieqCustomBaseContainer" class="input-group" style="margin-bottom: 1rem; border-bottom: 1px solid #555; padding-bottom: 10px;">
+					<label for="sieqCustomBase" data-lang-key="load_base">Load Base:</label>
+					<div style="display: flex; gap: 10px;">
+						<select id="sieqCustomBase" style="flex-grow: 1;">
+							<option value="" disabled selected data-lang-key="select_placeholder">-- Select --</option>
+							<option value="B" data-lang-key="balanced">Balanced</option>
+							<option value="D" data-lang-key="detailed">Detailed</option>
+							<option value="W" data-lang-key="warm">Warm</option>
+						</select>
+						<button id="resetSCustomBase" style="padding: 5px 10px; cursor: pointer;" title="Reset to Template">↺</button>
+					</div>
+				</div>
 				<label for="sieqCustomValues" data-lang-key="custom_ieq_val" style="margin-bottom: 1rem";>Custom IEQ Targets:</label>
 				<div class="input-group">
 					<label for="siet47" data-lang-key="freq_47">47 Hz Target:</label>
@@ -865,9 +865,9 @@
 				<span id="seqpreset-default" class="default-value"></span>
 			</div>
 			<div class="sticky-action-bar">
-			    <button id="slidershrinkseq" data-lang-key="shrink_sliders">Shrink sliders</button>
-			    <button id="sliderexpandseq" data-lang-key="expand_sliders">Expand sliders</button>
-			    <button id="resetCustomEqseq" data-lang-key="reset_custom_eq">Reset Custom Equalizer</button>
+				<button id="slidershrinkseq" data-lang-key="shrink_sliders">Shrink sliders</button>
+				<button id="sliderexpandseq" data-lang-key="expand_sliders">Expand sliders</button>
+				<button id="resetCustomEqseq" data-lang-key="reset_custom_eq">Reset Custom Equalizer</button>
 			</div>
 			<div class="eq-sliders" id="seqCustomEqContainer">
 				<div class="slider-container">
@@ -1191,32 +1191,32 @@
 			<h3 data-lang-key="experimental">Experimental</h3>
 			</summary>
 			<div id="stunedrate" class="select-container">
-		    <label data-lang-key="stunedrate">Tuned Sample Rate:</label>
-		    <select id="stunedrate">
-		        <option value="44100" data-lang-key="samplerate_44100">44100 Hz</option>
-		        <option value="48000" data-lang-key="samplerate_48000">48000 Hz</option>
-		        <option value="88200" data-lang-key="samplerate_88200">88200 Hz</option>
-		        <option value="96000" data-lang-key="samplerate_96000">96000 Hz</option>
-		        <option value="176400" data-lang-key="samplerate_176400">176400 Hz</option>
-		        <option value="192000" data-lang-key="samplerate_192000">192000 Hz</option>
-		        <option value="352800" data-lang-key="samplerate_352800">352800 Hz</option>
-		        <option value="384000" data-lang-key="samplerate_384000">384000 Hz</option>
-		    </select>
-		    <span id="stunedrate-default" class="default-value">(Default: 48000)</span>
-		    </div>
-		    <div id="s_output_channel" class="select-container">
-		    <label data-lang-key="s_output_channels">Output Channels:</label>
-		    <select id="s_output_channels">
-		        <option value="1">1</option>
-		        <option value="2">2</option>
-		        <option value="4">4</option>
-		        <option value="7">7</option>
-		        <option value="8">8</option>
-		        <option value="12">12</option>
-		        <option value="14">14</option>
-		    </select>
-		    <span id="s_output_channels-default" class="default-value">(Default: 2)</span>
-	    	</div>
+			<label data-lang-key="stunedrate">Tuned Sample Rate:</label>
+			<select id="stunedrate">
+				<option value="44100" data-lang-key="samplerate_44100">44100 Hz</option>
+				<option value="48000" data-lang-key="samplerate_48000">48000 Hz</option>
+				<option value="88200" data-lang-key="samplerate_88200">88200 Hz</option>
+				<option value="96000" data-lang-key="samplerate_96000">96000 Hz</option>
+				<option value="176400" data-lang-key="samplerate_176400">176400 Hz</option>
+				<option value="192000" data-lang-key="samplerate_192000">192000 Hz</option>
+				<option value="352800" data-lang-key="samplerate_352800">352800 Hz</option>
+				<option value="384000" data-lang-key="samplerate_384000">384000 Hz</option>
+			</select>
+			<span id="stunedrate-default" class="default-value">(Default: 48000)</span>
+			</div>
+			<div id="s_output_channel" class="select-container">
+			<label data-lang-key="s_output_channels">Output Channels:</label>
+			<select id="s_output_channels">
+				<option value="1">1</option>
+				<option value="2">2</option>
+				<option value="4">4</option>
+				<option value="7">7</option>
+				<option value="8">8</option>
+				<option value="12">12</option>
+				<option value="14">14</option>
+			</select>
+			<span id="s_output_channels-default" class="default-value">(Default: 2)</span>
+			</div>
 		</details>
 	</div>
 
@@ -1245,7 +1245,7 @@
 		</button>
 	</div>
 
-    <script type="module" src="./js/main.js"></script>
+	<script type="module" src="./js/main.js"></script>
 
 	<script>
 		const themeVariables = [

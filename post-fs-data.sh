@@ -34,15 +34,15 @@ if [ "$MODE" = "B" ];then
 		else
 			[ -f "$j" ] && rm -f "$j"
 			for DIR in "$MODPATH"/*; do
-			    [ -d "$DIR" ] || continue
-			    dirname="${DIR##*/}"
-			    case "$dirname" in
-			        vendor|product|odm|oem|system_ext|my_*|mi_ext)
-			            rm -rf "$DIR"
-			            ;;
-			        *)
-			            ;;
-			    esac
+				[ -d "$DIR" ] || continue
+				dirname="${DIR##*/}"
+				case "$dirname" in
+					vendor|product|odm|oem|system_ext|my_*|mi_ext)
+						rm -rf "$DIR"
+						;;
+					*)
+						;;
+				esac
 			done
 			echo "We have a problem"
 			emergency
@@ -59,15 +59,15 @@ if [ "$MODE" = "M" ];then
 		else
 			[ -f "$j" ] && rm -f "$j"
 			for DIR in "$MODPATH"/*; do
-			    [ -d "$DIR" ] || continue
-			    dirname="${DIR##*/}"
-			    case "$dirname" in
-			        vendor|product|odm|oem|system_ext|my_*|mi_ext)
-			            rm -rf "$DIR"
-			            ;;
-			        *)
-			            ;;
-			    esac
+				[ -d "$DIR" ] || continue
+				dirname="${DIR##*/}"
+				case "$dirname" in
+					vendor|product|odm|oem|system_ext|my_*|mi_ext)
+						rm -rf "$DIR"
+						;;
+					*)
+						;;
+				esac
 			done
 			echo "We have a problem"
 			emergency

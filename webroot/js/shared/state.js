@@ -1,7 +1,7 @@
 export const state = {
-    domCache: {},
-    translations: {
-        en: {
+	domCache: {},
+	translations: {
+		en: {
 			language_name: "English",
 			title: "Dolby Tuning DIY",
 			load_config: "Load Config",
@@ -25,8 +25,8 @@ export const state = {
 			enabled: "Enabled:",
 			intelligent_eq: "Intelligent EQ",
 			load_base: "Load Base Template:",
-            select_placeholder: "-- Select --",
-            reset_template: "Reset to Template",
+			select_placeholder: "-- Select --",
+			reset_template: "Reset to Template",
 			preset: "Preset:",
 			balanced: "Balanced",
 			detailed: "Detailed",
@@ -169,24 +169,24 @@ export const state = {
 			samplerate_384000: "384000 Hz",
 			h_output_channels: "Channel Count",
 			s_output_channels: "Channel Count"
-        }
-    },
-    supportedFeatures: {
-        harm: false,
-        angle: false,
-        distance: false,
-        hadvancedvirt: false,
-        sadvancedvirt: false,
-        hvirtmode: false,
-        svirtmode: false
-    },
-    currentConfig: {},
-    customValues: '103,32568,11164,5090,0,3,3,3',
-    scustomValues: '103,32568,11164,5090,0,3,3,3',
-    heqCustomValues: '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0',
-    seqCustomValues: '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0',
-    hieqCustomValues: '150,142,188,216,189,195,202,199,210,225,230,236,235,235,214,165,112,49,-24,-217',
-    sieqCustomValues: '150,142,188,216,189,195,202,199,210,225,230,236,235,235,214,165,112,49,-24,-217',
-    actionRunning: false,
-    isSimpleMode: true
+		}
+	},
+	supportedFeatures: {
+		harm: false,
+		angle: false,
+		distance: false,
+		hadvancedvirt: false,
+		sadvancedvirt: false,
+		hvirtmode: false,
+		svirtmode: false
+	},
+	currentConfig: {},
+	customValues: '103,32568,11164,5090,0,3,3,3',
+	scustomValues: '103,32568,11164,5090,0,3,3,3',
+	heqCustomValues: '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0',
+	seqCustomValues: '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0',
+	hieqCustomValues: '150,142,188,216,189,195,202,199,210,225,230,236,235,235,214,165,112,49,-24,-217',
+	sieqCustomValues: '150,142,188,216,189,195,202,199,210,225,230,236,235,235,214,165,112,49,-24,-217',
+	actionRunning: false,
+	isSimpleMode: true
 };

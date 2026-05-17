@@ -13,13 +13,13 @@ chmod 0755 "$TEMP_DIR"
 PRESET_NAME="balanced"
 
 if [ -z "$DIY" ] || [ ! -f "$DIY" ]; then
-    echo " -- Variable DIY or file tuningDIY.txt is missing --"
-    exit 1
+	echo " -- Variable DIY or file tuningDIY.txt is missing --"
+	exit 1
 fi
 
 if [ -z "$i" ] || [ ! -f "$i" ]; then
-    echo " -- Target XML file is missing or not defined --"
-    exit 1
+	echo " -- Target XML file is missing or not defined --"
+	exit 1
 fi
 
 initialize_all_variables
@@ -36,13 +36,13 @@ sed -n '/<preset.*name="'"$PRESET_NAME"'".*>/,/<\/preset>/ s/.*band_ieq frequenc
 
 # Fallback for Samsung-style configs
 if [ ! -s "$TEMP_FREQ_FILE" ]; then
-    sed -n '/<preset.*id="ieq_'"$PRESET_NAME"'".*>/,/<\/preset>/ s/.*band_ieq frequency="\([0-9]*\)".*/\1/p' "$i" > "$TEMP_FREQ_FILE"
+	sed -n '/<preset.*id="ieq_'"$PRESET_NAME"'".*>/,/<\/preset>/ s/.*band_ieq frequency="\([0-9]*\)".*/\1/p' "$i" > "$TEMP_FREQ_FILE"
 fi
 
 if [ ! -s "$TEMP_FREQ_FILE" ]; then
-    echo "-- Cannot find frequencies in $i"
-    rm -f "$TEMP_FREQ_FILE"
-    exit 1
+	echo "-- Cannot find frequencies in $i"
+	rm -f "$TEMP_FREQ_FILE"
+	exit 1
 fi
 
 update_tuning_comments "$DIY" "$TEMP_FREQ_FILE"

@@ -19,45 +19,45 @@ import { initVolumeLeveler } from './features/volumeleveler.js';
 import { updateOutput, updateDefaultValuesDisplay } from './view/renderer.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
-    try {
-        cacheDomElements();
-        getDomElement();
-        await loadTranslations();
-        setupCommonEvents();
-        virtListeners();
-        await checkFeatureSupport();
-        ensureDefaultValuesLoaded(); 
-        
-        if (state.isSimpleMode === undefined) {
-            state.isSimpleMode = true;
-        }
+	try {
+		cacheDomElements();
+		getDomElement();
+		await loadTranslations();
+		setupCommonEvents();
+		virtListeners();
+		await checkFeatureSupport();
+		ensureDefaultValuesLoaded(); 
+		
+		if (state.isSimpleMode === undefined) {
+			state.isSimpleMode = true;
+		}
 
-        const storedUIMode = localStorage.getItem('uiMode');
-        if (storedUIMode) {
-            actionLog(`Loading stored UI mode: ${storedUIMode}`);
-            state.isSimpleMode = storedUIMode === 'simple';
-        } else {
-            actionLog('No stored UI mode found. Defaulting to simple mode.');
-        }
-        
-        await applyUIMode(state.isSimpleMode);
-        initTuningToggles();
-        initHpSpToggle();
-        initBass();
-        initDialogEnhancer();
-        initEqualizer();
-        initIeq();
-        initMediaIntelligence();
-        initRegulator();
-        initVirtualizer();
-        initVolBoost();
-        initVolumeLeveler();
+		const storedUIMode = localStorage.getItem('uiMode');
+		if (storedUIMode) {
+			actionLog(`Loading stored UI mode: ${storedUIMode}`);
+			state.isSimpleMode = storedUIMode === 'simple';
+		} else {
+			actionLog('No stored UI mode found. Defaulting to simple mode.');
+		}
+		
+		await applyUIMode(state.isSimpleMode);
+		initTuningToggles();
+		initHpSpToggle();
+		initBass();
+		initDialogEnhancer();
+		initEqualizer();
+		initIeq();
+		initMediaIntelligence();
+		initRegulator();
+		initVirtualizer();
+		initVolBoost();
+		initVolumeLeveler();
 		initEndpointSettings();
-        await loadConfig();
-        updateOutput();
-        updateDefaultValuesDisplay();
-    } catch (error) {
-        actionLog(`Initialization error: ${error.message}`);
-        console.error('CRITICAL INITIALIZATION ERROR:', error);
-    }
+		await loadConfig();
+		updateOutput();
+		updateDefaultValuesDisplay();
+	} catch (error) {
+		actionLog(`Initialization error: ${error.message}`);
+		console.error('CRITICAL INITIALIZATION ERROR:', error);
+	}
 });

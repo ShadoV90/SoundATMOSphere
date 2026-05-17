@@ -419,12 +419,12 @@ h3 {
 	margin: 0.625rem;
 	justify-content: flex-start;
 	flex-wrap: nowrap;
-    position: sticky;
-    top: 0;
-    background-color: var(--bg-app);
-    z-index: 10;
-    padding: 0.75rem 0;
-    border-bottom: 1px solid var(--border);
+	position: sticky;
+	top: 0;
+	background-color: var(--bg-app);
+	z-index: 10;
+	padding: 0.75rem 0;
+	border-bottom: 1px solid var(--border);
 }
 
 .nav-tab {
@@ -779,7 +779,7 @@ details.section:not([open]) summary {
 /* --- Vertical Sliders --- */
 .equalizer-container {
 	width: 100%;
-    overflow-x: hidden;
+	overflow-x: hidden;
 	margin-top: 1.25rem;
 }
 
