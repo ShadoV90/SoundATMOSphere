@@ -178,7 +178,7 @@ export const equalizerPresets = {
 };
 
 export const configMap = {
-	
+
 	DOLBYMIDVLEV: { id: 'dolbymidvlev', type: 'toggle', default: 'OFF', transform: (el) => el && el.getAttribute('data-state') === 'true' ? 'ON' : 'OFF' },
 	DOLBYMIIEQ: { id: 'dolbymiieq', type: 'toggle', default: 'OFF', transform: (el) => el && el.getAttribute('data-state') === 'true' ? 'ON' : 'OFF' },
 	DOLBYMISURCOMP: { id: 'dolbymisurcomp', type: 'toggle', default: 'OFF', transform: (el) => el && el.getAttribute('data-state') === 'true' ? 'ON' : 'OFF' },
@@ -334,7 +334,7 @@ export const configMap = {
 
 export const visibilityMap = {
 	headphone: {
-		ieqCustomInput: { id: 'hieqCustomInput', showWhen: () => state.domCache.hieq?.value === 'C' || state.domCache.hieq?.value === 'CB'},
+		ieqCustomInput: { id: 'hieqCustomInput', showWhen: () => state.domCache.hieq?.value === 'C' || state.domCache.hieq?.value === 'CB' },
 		bassboostContainer: { id: 'hbassboostContainer', showWhen: (_, isVB) => !isVB },
 		basscutoffContainer: { id: 'hbasscutoffContainer', showWhen: (_, isVB) => !isVB },
 		basswidthContainer: { id: 'hbasswidthContainer', showWhen: (_, isVB) => !isVB },
@@ -358,7 +358,7 @@ export const visibilityMap = {
 		deaContainer: { id: 'hdeaContainer', showWhen: () => true },
 		dedContainer: { id: 'hdedContainer', showWhen: () => true },
 		virtualizerContainer: { id: 'hvirtualizerContainer', showWhen: () => true },
-		surboostContainer: { id: 'hsurboostContainer', showWhen: () => true  },
+		surboostContainer: { id: 'hsurboostContainer', showWhen: () => true },
 		heightfilterContainer: { id: 'hheightfilterContainer', showWhen: (isSimpleMode) => !isSimpleMode },
 		levstrContainer: { id: 'hlevstrContainer', showWhen: (isSimpleMode) => !isSimpleMode },
 		levamountContainer: { id: 'hlevamountContainer', showWhen: (isSimpleMode) => !isSimpleMode },
@@ -371,7 +371,7 @@ export const visibilityMap = {
 		output_channelsContainer: { id: 'h_output_channelsContainer', showWhen: (isSimpleMode) => !isSimpleMode }
 	},
 	speaker: {
-		ieqCustomInput: { id: 'sieqCustomInput', showWhen: () => state.domCache.sieq?.value === 'C' || state.domCache.sieq?.value === 'CD'},
+		ieqCustomInput: { id: 'sieqCustomInput', showWhen: () => state.domCache.sieq?.value === 'C' || state.domCache.sieq?.value === 'CD' },
 		bassboostContainer: { id: 'sbassboostContainer', showWhen: (_, isVB) => !isVB },
 		basscutoffContainer: { id: 'sbasscutoffContainer', showWhen: (_, isVB) => !isVB },
 		basswidthContainer: { id: 'sbasswidthContainer', showWhen: (_, isVB) => !isVB },
@@ -411,28 +411,28 @@ export const translationMaps = {
 		'103,32568,11164,5090,0,1,2,2': 'xiaomi_15_spatializer',
 		'200,32568,15164,8090,1,2,2,1': 'ShadoV_favorite_1',
 		'200,32568,15164,8090,1,2,3,1': 'ShadoV_favorite_2',
-		'360,65535,8192,4096,0,3,2,2': 'ShadoV_favorite_3'
+		'512,40960,20480,10240,0,1,1,1': 'ShadoV_favorite_3'
 	},
 	timbre: { '1': 'level_1', '2': 'level_2', '3': 'level_3', '4': 'level_4' }
 };
 
 const heqDefaultKeys = [
-	'heq_47', 'heq_141', 'heq_234', 'heq_328', 'heq_469', 'heq_656', 'heq_844', 
-	'heq_1031', 'heq_1313', 'heq_1688', 'heq_2250', 'heq_3000', 'heq_3750', 
+	'heq_47', 'heq_141', 'heq_234', 'heq_328', 'heq_469', 'heq_656', 'heq_844',
+	'heq_1031', 'heq_1313', 'heq_1688', 'heq_2250', 'heq_3000', 'heq_3750',
 	'heq_4688', 'heq_5813', 'heq_7125', 'heq_9000', 'heq_11250', 'heq_13875', 'heq_19688'
 ];
 
 const hietDefaultKeys = [
-	'hiet_47', 'hiet_141', 'hiet_234', 'hiet_328', 'hiet_469', 'hiet_656', 
-	'hiet_844', 'hiet_1031', 'hiet_1313', 'hiet_1688', 'hiet_2250', 'hiet_3000', 
-	'hiet_3750', 'hiet_4688', 'hiet_5813', 'hiet_7125', 'hiet_9000', 'hiet_11250', 
+	'hiet_47', 'hiet_141', 'hiet_234', 'hiet_328', 'hiet_469', 'hiet_656',
+	'hiet_844', 'hiet_1031', 'hiet_1313', 'hiet_1688', 'hiet_2250', 'hiet_3000',
+	'hiet_3750', 'hiet_4688', 'hiet_5813', 'hiet_7125', 'hiet_9000', 'hiet_11250',
 	'hiet_13875', 'hiet_19688'
 ];
 
 const sietDefaultKeys = [
-	'siet_47', 'siet_141', 'siet_234', 'siet_328', 'siet_469', 'siet_656', 
-	'siet_844', 'siet_1031', 'siet_1313', 'siet_1688', 'siet_2250', 'siet_3000', 
-	'siet_3750', 'siet_4688', 'siet_5813', 'siet_7125', 'siet_9000', 'siet_11250', 
+	'siet_47', 'siet_141', 'siet_234', 'siet_328', 'siet_469', 'siet_656',
+	'siet_844', 'siet_1031', 'siet_1313', 'siet_1688', 'siet_2250', 'siet_3000',
+	'siet_3750', 'siet_4688', 'siet_5813', 'siet_7125', 'siet_9000', 'siet_11250',
 	'siet_13875', 'siet_19688'
 ];
 4
@@ -452,34 +452,34 @@ export const generateConfigString = () => {
 	const config = {};
 	const lang = state.domCache.languageSelect?.value || 'en';
 	for (const [key, configEntry] of Object.entries(configMap)) {
-	const el = state.domCache[configEntry.id];
-	let value;
+		const el = state.domCache[configEntry.id];
+		let value;
 
-	if (!el) {
-		console.warn(`generateConfigString: Element not found for key=${key}, id=${configEntry.id}, using default.`);
-		value = configEntry.default;
-	} else if (configEntry.transform) {
-		value = configEntry.transform(el);
-	} else {
-		value = configEntry.type === 'toggle' ? el.getAttribute('data-state') : el.value;
-	}
-
-	if (value === null || value === undefined || value === '') {
-		console.warn(`generateConfigString: Value for key=${key} was invalid, empty, or null. Falling back to default: ${configEntry.default}`);
-		value = configEntry.default;
-	}
-
-	if (configEntry.type === 'range') {
-		const converted = convertFromLanguageNumerals(value.toString(), lang);
-		const parsed = parseFloat(converted);
-		if (isNaN(parsed)) {
-			console.warn(`generateConfigString: NaN detected for key=${key}, rawValue=${value}, converted=${converted}, using default=${configEntry.default}`);
-			value = parseFloat(configEntry.default);
+		if (!el) {
+			console.warn(`generateConfigString: Element not found for key=${key}, id=${configEntry.id}, using default.`);
+			value = configEntry.default;
+		} else if (configEntry.transform) {
+			value = configEntry.transform(el);
 		} else {
-			value = parsed;
+			value = configEntry.type === 'toggle' ? el.getAttribute('data-state') : el.value;
 		}
-	}
-	config[key.toLowerCase()] = value.toString();
+
+		if (value === null || value === undefined || value === '') {
+			console.warn(`generateConfigString: Value for key=${key} was invalid, empty, or null. Falling back to default: ${configEntry.default}`);
+			value = configEntry.default;
+		}
+
+		if (configEntry.type === 'range') {
+			const converted = convertFromLanguageNumerals(value.toString(), lang);
+			const parsed = parseFloat(converted);
+			if (isNaN(parsed)) {
+				console.warn(`generateConfigString: NaN detected for key=${key}, rawValue=${value}, converted=${converted}, using default=${configEntry.default}`);
+				value = parseFloat(configEntry.default);
+			} else {
+				value = parsed;
+			}
+		}
+		config[key.toLowerCase()] = value.toString();
 	}
 	return `
 V=60
@@ -802,7 +802,7 @@ HVIRTMOD=${config.hvirtmod}
 # 200,32767,16379,7090,3,3,3,1
 # 200,32568,15164,8090,1,2,2,1 (one of my favorite)
 # 200,32568,15164,8090,1,2,3,1 (also one of my favorite)
-# 360,65535,8192,4096,0,3,2,2 (one of my favorite and currently used)
+# 512,40960,20480,10240,0,1,1,1 (one of my favorite and currently used)
 # I encourage to experiment but be careful with modifying it ^^
 
 HADVIRTREND=${config.hadvirtrend}
@@ -1108,7 +1108,7 @@ SVIRTMOD=${config.svirtmod}
 # 200,32767,16379,7090,3,3,3,1
 # 200,32568,15164,8090,1,2,2,1 (one of my favorite)
 # 200,32568,15164,8090,1,2,3,1 (also one of my favorite)
-# 360,65535,8192,4096,0,3,2,2 (one of my favorite and currently used)
+# 512,40960,20480,10240,0,1,1,1 (one of my favorite and currently used)
 # I encourage to experiment but be careful with modifying it ^^
 
 SADVIRTREND=${config.sadvirtrend}
