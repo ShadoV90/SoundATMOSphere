@@ -20,13 +20,15 @@ TMPDIR="$MODPATH/temp"
 # Remove dolby database
 rm -f /data/vendor/dolby/*
 
-trap 'rm -rf "$TMPDIR"' EXIT
+trap 'rm -rf "${TMPDIR:?}"' EXIT
 
-rm -rf "$TMPDIR"
+rm -rf "${TMPDIR:?}"
 mkdir -p "$TMPDIR"
 chmod 0755 "$TMPDIR"
-sleep 0.5
 touch "$MODPATH/.action_lock"
+
+sleep 0.5
+
 check() {
 	if grep -q "^author=ShadoV90$" "$MODPATH/module.prop" && grep -q "^name=SoundATMOSphere$" "$MODPATH/module.prop"; then
 		set -x
