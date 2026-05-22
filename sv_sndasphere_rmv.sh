@@ -8,7 +8,7 @@ fi
 
 [ ! -d "$MODPATH/debug" ] && mkdir "$MODPATH/debug"
 
-exec 2>"$MODPATH/debug/debug2.txt"
+exec 2>"$MODPATH/debug/service.d_debug.txt"
 set -x
 #locations variables
 DDLB=$(find /data/adb/modules -path "*/dolby/*" -not -path "/data/adb/modules/sv_sndasphere/*" -type f \( -name "*dax*.xml" -o -name "*dap*.xml" \))

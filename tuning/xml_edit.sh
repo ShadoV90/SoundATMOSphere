@@ -148,6 +148,11 @@ apply_tuning_settings() {
 			if detect_feature "$file" "advanced-speaker-virtualizer-rendering-config"; then
 				_gen_tuning_value "speaker" "advanced-speaker-virtualizer-rendering-config" "$sadvirtrend"
 			fi
+			
+			_gen_tuning_value "speaker" "bass-enhancer-enable" "true"
+			_gen_tuning_value "speaker" "bass-enhancer-boost" "$sbassboost"
+			_gen_tuning_value "speaker" "bass-enhancer-cutoff-frequency" "264"
+			_gen_tuning_value "speaker" "bass-enhancer-width" "8"
 		fi
 	} >> "$sed_script_file"
 
@@ -292,7 +297,7 @@ apply_all_profiles() {
 
 				if [ "$srenderbass" = "VB" ] && [ "$speaker_vbass_available" = "true" ]; then
 					_gen_endpoint_value "speaker" "virtual-bass-process-enable" "true"
-					_gen_endpoint_value "speaker" "bass-enhancer-enable" "false"
+					_gen_endpoint_value "speaker" "bass-enhancer-enable" "true"
 				else
 					_gen_endpoint_value "speaker" "virtual-bass-process-enable" "false"
 					_gen_endpoint_value "speaker" "bass-enhancer-enable" "true"

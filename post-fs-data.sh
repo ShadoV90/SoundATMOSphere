@@ -1,11 +1,19 @@
 #!/bin/sh
 MODPATH=${0%/*}
+
+# Remove debug folder to be sure only fresh files will exist there
+rm -rf "$MODPATH/debug"
+
+# Creation of new debug folder if old is not existent (it shouldn't exist)
 if [ ! -d "$MODPATH/debug" ]; then
 mkdir -p "$MODPATH/debug"
 fi
+
+# Start debug info
 exec 2>"$MODPATH/debug/post-fs_debug.txt"
 set -x
 
+# Emergency function (creation hidden file to let script know that recreating whole module is needed)
 emergency() {
 touch "$MODPATH/.emergency"
 }
@@ -100,12 +108,9 @@ MOD_PATH="/data/adb/modules/$MOD_ID"
 MOD_DIR="$MOD_PATH/system"
 METAMODULE_SYMLINK="/data/adb/metamodule"
 
-# Initialize log and clear old data
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] Starting bind mount script for $MOD_ID"
-
 # Function to log messages with a timestamp
 log_message() {
-	echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1"
+	echo " -- $1 -- "
 }
 
 # Yield to metamodules

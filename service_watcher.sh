@@ -1,4 +1,11 @@
 #!/bin/sh
+
+# Dynamically find bin directories in /data/adb/ for any unknown root solutions
+ROOT_BINS=$(find /data/adb -maxdepth 2 -type d \( -name "bin" -o -name "magisk" \) 2>/dev/null | tr '\n' ':')
+
+# Exporting reliable PATH combining dynamic root paths and standard system paths
+export PATH="${ROOT_BINS}/apex/com.android.runtime/bin:/system/bin:/system/xbin:$PATH"
+
 MODPATH=${0%/*}
 if [ ! -d "$MODPATH/debug" ]; then
 	mkdir "$MODPATH/debug"
@@ -20,11 +27,11 @@ FAIL_COUNT=0
 MAX_FAILS=10
 
 # Checking for boot complete
-boottest(){
+boottest() {
 	timeout1=60
-	while [ "$(getprop sys.boot_completed)" != 1 ] && [ $timeout1 -gt 0 ]; do
+	while [ "$(getprop sys.boot_completed)" != 1 ] && [ "$timeout1" -gt 0 ]; do
 		sleep 1
-		timeout1=$((timeout1-1))
+		timeout1=$((timeout1 - 1))
 	done
 	
 	if [ "$timeout1" -eq 0 ]; then
@@ -37,11 +44,14 @@ boottest(){
 }
 
 # Checking for dolby service files
-servicetest(){
-	DLBSERV=$(find /*/bin/hw -type f -name '*dms*' -o -name '*dolby*' 2>/dev/null | grep -v "c2@")
+servicetest() {
+	BIN_PATHS="/vendor/bin/hw /system/bin/hw /odm/bin/hw /system_ext/bin /product/bin"
+	
+	# shellcheck disable=SC2086
+	DLBSERV=$(find $BIN_PATHS -type f \( -name '*dms*' -o -name '*dolby*' \) 2>/dev/null | grep -v "c2@")
 	
 	if [ -z "$DLBSERV" ]; then
-		echo " -- no Dolby service BINARIES found - break operation immediately! -- "
+		echo " -- No Dolby service BINARIES found - Watcher have nothing to do in this case. Exiting. -- "
 		exit 1
 	else
 		echo " -- Dolby service binaries found! - Proceed -- "
@@ -63,9 +73,11 @@ if [ "$BOOTCOMPLETE" -eq 1 ] && [ "$DOLBYSERVICE" -eq 1 ]; then
 			PID_RECHECK=$(pidof "$srv_name")
 			
 			if [ -z "$PID_RECHECK" ]; then
-				echo " -- restarting service: $srv_name -- "
-				# Detach process from shell to keep it alive and avoid Rescue Party reboots
+				echo " -- restarting service: $srv_name -- " >> "$MODPATH/debug/watcher.txt"
+				# Detaching process from shell
 				su -c "setsid $srv_path > /dev/null 2>&1 &"
+			else
+				echo " -- It seems service was restarted by system. No additional action required. -- " >> "$MODPATH/debug/watcher.txt"
 			fi
 		}
 		
@@ -80,19 +92,17 @@ if [ "$BOOTCOMPLETE" -eq 1 ] && [ "$DOLBYSERVICE" -eq 1 ]; then
 						FAIL_COUNT=$((FAIL_COUNT + 1))
 						
 						if [ "$FAIL_COUNT" -ge "$MAX_FAILS" ]; then
-							echo " -- CRITICAL: Service failed to start $MAX_FAILS times in a row. Aborting watcher! -- "
+							echo " -- CRITICAL: Service failed to start $MAX_FAILS times in a row. Aborting watcher! -- " >> "$MODPATH/debug/watcher.txt"
 							exit 1
 						fi
 						
-						set -x
-						echo " -- Service $SRV_NAME seems to be down! (Consecutive fails: $FAIL_COUNT) -- "
+						echo " -- Service $SRV_NAME seems to be down! (Consecutive fails: $FAIL_COUNT) -- " >> "$MODPATH/debug/watcher.txt"
 						if [ "$BUILTIN" = true ]; then
 							sleep 5
 						else
 							sleep 1
 						fi
 						restart_service "$SRV" &
-						set +x
 					else
 						# Service is up and running normally, reset the fail counter
 						FAIL_COUNT=0
@@ -110,22 +120,19 @@ if [ "$BOOTCOMPLETE" -eq 1 ] && [ "$DOLBYSERVICE" -eq 1 ]; then
 			
 			if [ -z "$WAKE_STATE" ]; then
 				# FAIL-SAFE: If dumpsys fails or format changes completely
-				# Fall back to a safe 3-second interval and proceed with checking.
-				echo "N/A"
+				# Fall back to a safe 3-second interval and proceed with checking
+				echo "N/A" >> "$MODPATH/debug/watcher.txt"
 				sleep 3
 			elif echo "$WAKE_STATE" | grep -q -e "Awake" -e "1"; then
 				# Screen is ON
-				echo "A"
 				sleep 1
 			else
 				# Screen is OFF (e.g. Asleep (or 0), Dozing (or 3))
-				echo "O"
 				sleep 10
 			fi
 			
 			# Mutex lock: Wait if action.sh is killing the service for configuration update
 			[ -f "$MODPATH/.action_lock" ] && continue
-			
 			check_service
 		done
 	fi
