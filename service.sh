@@ -2,13 +2,28 @@
 
 MODPATH=${0%/*}
 
-# Create debug directory if it doesn't exist
-if [ ! -d "$MODPATH/debug" ]; then
-	mkdir "$MODPATH/debug"
+. "$MODPATH/tuning/utils.sh"
+
+# Dynamically find bin directories in /data/adb/ for any unknown root solutions
+ROOT_BINS=$(find /data/adb -maxdepth 2 -type d \( -name "bin" -o -name "magisk" \) 2>/dev/null | tr '\n' ':')
+# Exporting reliable PATH combining dynamic root paths and standard system paths
+export PATH="${ROOT_BINS}/apex/com.android.runtime/bin:/system/bin:/system/xbin:$PATH"
+
+meta_check
+
+if [ "$META_ACTIVE" = true ]; then
+    TMPDIR="/dev/.sv_sndasphere/temp"
+    DEBUG_DIR="/data/adb/modules/sv_sndasphere/debug"
+    LOCK_FILE="/dev/.sv_sndasphere/.action_lock"
+else
+    TMPDIR="$MODPATH/temp"
+    DEBUG_DIR="$MODPATH/debug"
+    LOCK_FILE="$MODPATH/.action_lock"
 fi
 
 # Enable debug logging
-exec 2>"$MODPATH/debug/service_debug.txt"
+mkdir -p "$DEBUG_DIR"
+exec 2>"$DEBUG_DIR/service_debug.txt"
 set -x
 
 check_mount_restart() {
@@ -26,8 +41,8 @@ check_mount_restart() {
 		
 		if [ -f "$y" ]; then
 			if ! cmp -s "$x" "$y"; then
-				echo " -- Files $x and $y are different. Mounting modded file. -- "
-				mount -o bind "$x" "$y" && touch "$FLAG_FILE"
+				echo " -- Files $x and $y are different. Flagging for mount. -- "
+				touch "$FLAG_FILE"
 			else
 				echo " -- Files $x and $y are identical. Skip. -- "
 			fi
@@ -38,6 +53,10 @@ check_mount_restart() {
 	
 	if [ -f "$FLAG_FILE" ]; then
 		rm -f "$FLAG_FILE"
+		
+		echo " -- Changes detected. Executing action.sh -- "
+		. "$MODPATH/action.sh"
+		
 		pkill -f mediaserver
 		pkill -f audioserver
 	else
@@ -45,7 +64,7 @@ check_mount_restart() {
 	fi
 }
 
-FLAG_FILE="$MODPATH/debug/MOUNTED_FLAG"
+FLAG_FILE="$DEBUG_DIR/MOUNTED_FLAG"
 resetprop audio.safemedia.bypass true
 
 # Run boot-dependent tasks in the background

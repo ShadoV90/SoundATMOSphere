@@ -71,7 +71,7 @@ apply_global_media_intelligence_settings() {
 				_gen_profile_global_value "$profile" "mi-dv-leveler-steering-enable" "$dolbymidvlev"
 				_gen_profile_global_value "$profile" "mi-ieq-steering-enable" "$dolbymiieq"
 				_gen_profile_global_value "$profile" "mi-surround-compressor-steering-enable" "$dolbymisurcomp"
-				_gen_profile_global_value "$profile" "mi-adaptive-virtualizer-steering-enable" "$dolbmiadaptvirt"
+				_gen_profile_global_value "$profile" "mi-adaptive-virtualizer-steering-enable" "$dolbymiadaptvirt"
 				_gen_profile_global_value "$profile" "headphone-virtualizer-mode" "$hvirtmod"
 				_gen_profile_global_value "$profile" "mi-virtualizer-binaural-steering-enable" "$dolbymivirtbin"
 				_gen_profile_global_value "$profile" "mi-dialog-enhancer-steering-enable"  "$dolbymidialenh"
@@ -150,7 +150,7 @@ apply_tuning_settings() {
 			fi
 			
 			_gen_tuning_value "speaker" "bass-enhancer-enable" "true"
-			_gen_tuning_value "speaker" "bass-enhancer-boost" "$sbassboost"
+			_gen_tuning_value "speaker" "bass-enhancer-boost" "$((sbassboost/2))"
 			_gen_tuning_value "speaker" "bass-enhancer-cutoff-frequency" "264"
 			_gen_tuning_value "speaker" "bass-enhancer-width" "8"
 		fi
@@ -396,17 +396,17 @@ apply_virtual_bass() {
 			fi
 
 			if [ "$sbassharmtype" -eq 1 ]; then
-				printf '%s\n' "/endpoint_type=\"$endpoint\"/,/<\/tuning>/s|virtual-bass-harmgains value=\"[^,]*,[^,]*,[^,]*,[^,\"]*([^\"]*)\".*|virtual-bass-harmgains value=\"$((sbassharmboost*6)),$((sbassharmboost*6)),$((sbassharmboost*6)),$((sbassharmboost*6))\1\"/>|g"
-				printf '%s\n' "/endpoint_type=\"$endpoint\"/,/<\/tuning>/s|virtual-bass-hybgains value=\"[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,\"]*([^\"]*)\".*|virtual-bass-hybgains value=\"$((sbasslingain*6)),$((sbasslingain*6)),$((sbasslingain*6)),$((sbasslingain*6)),$((sbasslingain*6)),$((sbasslingain*6))\1\"/>|g"
+				printf '%s\n' "/endpoint_type=\"$endpoint\"/,/<\/tuning>/s|virtual-bass-harmgains value=\"[^,]*,[^,]*,[^,]*,[^,\"]*([^\"]*)\".*|virtual-bass-harmgains value=\"$((sbassharmboost*0)),$((sbassharmboost*6)),$((sbassharmboost*6)),$((sbassharmboost*6))\1\"/>|g"
+				printf '%s\n' "/endpoint_type=\"$endpoint\"/,/<\/tuning>/s|virtual-bass-hybgains value=\"[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,\"]*([^\"]*)\".*|virtual-bass-hybgains value=\"$((sbasslingain*-12)),$((sbasslingain*3)),$((sbasslingain*3)),$((sbasslingain*3)),$((sbasslingain*3)),$((sbasslingain*3))\1\"/>|g"
 			elif [ "$sbassharmtype" -eq 2 ]; then
-				printf '%s\n' "/endpoint_type=\"$endpoint\"/,/<\/tuning>/s|virtual-bass-harmgains value=\"[^,]*,[^,]*,[^,]*,[^,\"]*([^\"]*)\".*|virtual-bass-harmgains value=\"$((sbassharmboost*6)),$((sbassharmboost*9)),$((sbassharmboost*12)),$((sbassharmboost*12))\1\"/>|g"
-				printf '%s\n' "/endpoint_type=\"$endpoint\"/,/<\/tuning>/s|virtual-bass-hybgains value=\"[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,\"]*([^\"]*)\".*|virtual-bass-hybgains value=\"$((sbasslingain*6)),$((sbasslingain*12)),$((sbasslingain*12)),$((sbasslingain*12)),$((sbasslingain*12)),$((sbasslingain*12))\1\"/>|g"
+				printf '%s\n' "/endpoint_type=\"$endpoint\"/,/<\/tuning>/s|virtual-bass-harmgains value=\"[^,]*,[^,]*,[^,]*,[^,\"]*([^\"]*)\".*|virtual-bass-harmgains value=\"$((sbassharmboost*0)),$((sbassharmboost*6)),$((sbassharmboost*9)),$((sbassharmboost*9))\1\"/>|g"
+				printf '%s\n' "/endpoint_type=\"$endpoint\"/,/<\/tuning>/s|virtual-bass-hybgains value=\"[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,\"]*([^\"]*)\".*|virtual-bass-hybgains value=\"$((sbasslingain*-12)),$((sbasslingain*3)),$((sbasslingain*3)),$((sbasslingain*3)),$((sbasslingain*3)),$((sbasslingain*3))\1\"/>|g"
 			elif [ "$sbassharmtype" -eq 3 ]; then
-				printf '%s\n' "/endpoint_type=\"$endpoint\"/,/<\/tuning>/s|virtual-bass-harmgains value=\"[^,]*,[^,]*,[^,]*,[^,\"]*([^\"]*)\".*|virtual-bass-harmgains value=\"$((sbassharmboost*6)),$((sbassharmboost*12)),$((sbassharmboost*12)),$((sbassharmboost*12))\1\"/>|g"
-				printf '%s\n' "/endpoint_type=\"$endpoint\"/,/<\/tuning>/s|virtual-bass-hybgains value=\"[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,\"]*([^\"]*)\".*|virtual-bass-hybgains value=\"$((sbasslingain*6)),$((sbasslingain*12)),$((sbasslingain*12)),$((sbasslingain*12)),$((sbasslingain*12)),$((sbasslingain*12))\1\"/>|g"
+				printf '%s\n' "/endpoint_type=\"$endpoint\"/,/<\/tuning>/s|virtual-bass-harmgains value=\"[^,]*,[^,]*,[^,]*,[^,\"]*([^\"]*)\".*|virtual-bass-harmgains value=\"$((sbassharmboost*0)),$((sbassharmboost*9)),$((sbassharmboost*9)),$((sbassharmboost*9))\1\"/>|g"
+				printf '%s\n' "/endpoint_type=\"$endpoint\"/,/<\/tuning>/s|virtual-bass-hybgains value=\"[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,\"]*([^\"]*)\".*|virtual-bass-hybgains value=\"$((sbasslingain*-12)),$((sbasslingain*3)),$((sbasslingain*3)),$((sbasslingain*3)),$((sbasslingain*3)),$((sbasslingain*3))\1\"/>|g"
 			elif [ "$sbassharmtype" -eq 4 ]; then
-				printf '%s\n' "/endpoint_type=\"$endpoint\"/,/<\/tuning>/s|virtual-bass-harmgains value=\"[^,]*,[^,]*,[^,]*,[^,\"]*([^\"]*)\".*|virtual-bass-harmgains value=\"$((sbassharmboost*12)),$((sbassharmboost*12)),$((sbassharmboost*12)),$((sbassharmboost*12))\1\"/>|g"
-				printf '%s\n' "/endpoint_type=\"$endpoint\"/,/<\/tuning>/s|virtual-bass-hybgains value=\"[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,\"]*([^\"]*)\".*|virtual-bass-hybgains value=\"$((sbasslingain*6)),$((sbasslingain*12)),$((sbasslingain*12)),$((sbasslingain*12)),$((sbasslingain*12)),$((sbasslingain*12))\1\"/>|g"
+				printf '%s\n' "/endpoint_type=\"$endpoint\"/,/<\/tuning>/s|virtual-bass-harmgains value=\"[^,]*,[^,]*,[^,]*,[^,\"]*([^\"]*)\".*|virtual-bass-harmgains value=\"$((sbassharmboost*0)),$((sbassharmboost*12)),$((sbassharmboost*12)),$((sbassharmboost*12))\1\"/>|g"
+				printf '%s\n' "/endpoint_type=\"$endpoint\"/,/<\/tuning>/s|virtual-bass-hybgains value=\"[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,\"]*([^\"]*)\".*|virtual-bass-hybgains value=\"$((sbasslingain*-12)),$((sbasslingain*3)),$((sbasslingain*3)),$((sbasslingain*3)),$((sbasslingain*3)),$((sbasslingain*3))\1\"/>|g"
 			fi
 		fi
 	} >> "$out_sed_file"

@@ -3,12 +3,27 @@ mount -o rw,remount /data
 
 [ -z "$MODPATH" ] && MODPATH=/data/adb/modules/sv_sndasphere
 
-if [ ! -d "$MODPATH/debug" ]; then
-	mkdir -p "$MODPATH/debug"
-	chmod 0755 "$MODPATH/debug"
+# shellcheck source=./utils.sh
+. "$MODPATH/tuning/utils.sh"
+
+meta_check
+
+if [ "$META_ACTIVE" = true ]; then
+    TMPDIR="/dev/.sv_sndasphere/temp"
+	if [ "$IS_FLASHING" = "true" ]; then
+		DEBUG_DIR="/data/adb/modules_update/sv_sndasphere/debug"
+	else
+    	DEBUG_DIR="/data/adb/modules/sv_sndasphere/debug"
+	fi
+    LOCK_FILE="/dev/.sv_sndasphere/.action_lock"
+else
+    TMPDIR="$MODPATH/temp"
+    DEBUG_DIR="$MODPATH/debug"
+    LOCK_FILE="$MODPATH/.action_lock"
 fi
 
-exec 2>"$MODPATH/debug/main_or_emergency_debug.txt"
+mkdir -p "$TMPDIR" "$DEBUG_DIR"
+exec 2>"$DEBUG_DIR/main_or_emergency_debug.txt"
 set -x
 
 install_file() {
@@ -47,82 +62,6 @@ for DIR in "$MODPATH/"*; do
 			;;
 	esac
 done
-
-check() {
-	if grep -q "^author=ShadoV90$" "$MODPATH/module.prop" && grep -q "^name=SoundATMOSphere$" "$MODPATH/module.prop"; then
-		set -x
-	else
-		echo " -- Nice try dude... -- "
-		exit 1
-	fi
-}
-
-apply_permissions() {
-	local orig="$1"
-	local target="$2"
-	local mod own con log_con ext orig_dir
-
-	mod=$(stat -c %a "$orig" 2>/dev/null || echo "755")
-	own=$(stat -c %U:%G "$orig" 2>/dev/null || echo "root:root")
-
-	chmod "$mod" "$target"
-	chown "$own" "$target"
-
-	if ! chcon --reference="$orig" "$target" 2>/dev/null; then
-		con=$(stat -c %C "$orig" 2>/dev/null)
-
-		if [ -z "$con" ] || [ "$con" = "?" ]; then
-			# shellcheck disable=SC2012
-			con=$(ls -dZ "$orig" 2>/dev/null | awk '{print $1}')
-		fi
-
-		if [ -z "$con" ] || [ "$con" = "?" ]; then
-			ext="${target##*.}"
-			[ "$ext" = "$target" ] && ext="none"
-			orig_dir=$(dirname "$orig")
-			
-			if [ "$ext" = "none" ]; then
-				# shellcheck disable=SC2012
-				con=$(ls -Z "$orig_dir" 2>/dev/null | awk '
-					!/^d/ && $1 != "?" && $1 != "" {
-						c[$1]++; 
-						if(c[$1] > max) { max = c[$1]; res = $1 }
-					} END { print res }')
-			else
-				# shellcheck disable=SC2012
-				con=$(ls -Z "$orig_dir/"*."$ext" 2>/dev/null | awk '
-					$1 != "?" && $1 != "" {
-						c[$1]++; 
-						if(c[$1] > max) { max = c[$1]; res = $1 }
-					} END { print res }')
-			fi
-
-			if [ -z "$con" ] || [ "$con" = "?" ]; then 
-				case "$orig_dir" in 
-					*/system/*) con="u:object_r:system_file:s0" ;; 
-					*/vendor/etc/*|*/odm/etc/*) con="u:object_r:vendor_configs_file:s0" ;; 
-					*/vendor/*|*/odm/*) con="u:object_r:vendor_file:s0" ;; 
-					*) con="u:object_r:system_file:s0" ;; 
-				esac
-			fi
-		fi
-
-		if [ -n "$con" ]; then
-			 chcon "$con" "$target"
-			 log_con="$con (fallback applied)"
-		else
-			 log_con="Failed to determine context"
-		fi
-	else
-		# shellcheck disable=SC2012
-		log_con=$(ls -dZ "$target" 2>/dev/null | awk '{print $1}')
-	fi
-
-	echo " -- Setting permissions for $target -- "
-	echo " -- Permissions: $mod -- "
-	echo " -- Owner:Group: $own -- "
-	echo " -- Selinux Context: $log_con -- "
-}
 
 perms() {
 	echo " "
@@ -195,7 +134,7 @@ builtinmode() {
 }
 
 set +x
-check
+check_tamp
 set -x
 
 echo " -- This module have two modes -- "

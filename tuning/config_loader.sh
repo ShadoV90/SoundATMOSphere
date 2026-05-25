@@ -505,14 +505,14 @@ set_dolbymi() {
 	dolbymidvlev=$(get_mi_bool "DOLBYMIDVLEV")
 	dolbymiieq=$(get_mi_bool "DOLBYMIIEQ")
 	dolbymisurcomp=$(get_mi_bool "DOLBYMISURCOMP")
-	dolbmiadaptvirt=$(get_mi_bool "DOLBYMIADAPTVIRT")
+	dolbymiadaptvirt=$(get_mi_bool "DOLBYMIADAPTVIRT")
 	dolbymivirtbin=$(get_mi_bool "DOLBYMIVIRTBIN")
 	dolbymidialenh=$(get_mi_bool "DOLBYMIDIALENH")
 	
 	export dolbymidvlev
 	export dolbymiieq
 	export dolbymisurcomp
-	export dolbmiadaptvirt
+	export dolbymiadaptvirt
 	export dolbymivirtbin
 	export dolbymidialenh
 }
@@ -545,7 +545,7 @@ initialize_all_variables() {
 	echo ""
 	echo " -- MI - Surround Compressor: $dolbymisurcomp -- "
 	echo ""
-	echo " -- MI - Adaptive Virtualizer: $dolbmiadaptvirt -- "
+	echo " -- MI - Adaptive Virtualizer: $dolbymiadaptvirt -- "
 	echo ""
 	echo " -- MI - Virtualizer Binaural Steering: $dolbymivirtbin -- "
 	echo ""

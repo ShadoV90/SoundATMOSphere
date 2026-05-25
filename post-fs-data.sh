@@ -1,16 +1,31 @@
 #!/bin/sh
 MODPATH=${0%/*}
 
-# Remove debug folder to be sure only fresh files will exist there
-rm -rf "$MODPATH/debug"
+. "$MODPATH/tuning/utils.sh"
 
-# Creation of new debug folder if old is not existent (it shouldn't exist)
-if [ ! -d "$MODPATH/debug" ]; then
-mkdir -p "$MODPATH/debug"
+# Dynamically find bin directories in /data/adb/ for any unknown root solutions
+ROOT_BINS=$(find /data/adb -maxdepth 2 -type d \( -name "bin" -o -name "magisk" \) 2>/dev/null | tr '\n' ':')
+# Exporting reliable PATH combining dynamic root paths and standard system paths
+export PATH="${ROOT_BINS}/apex/com.android.runtime/bin:/system/bin:/system/xbin:$PATH"
+
+meta_check
+
+if [ "$META_ACTIVE" = true ]; then
+    TMPDIR="/dev/.sv_sndasphere/temp"
+    DEBUG_DIR="/data/adb/modules/sv_sndasphere/debug"
+else
+    TMPDIR="$MODPATH/temp"
+    DEBUG_DIR="$MODPATH/debug"
 fi
 
+MOD_ID="sv_sndasphere"
+MOD_PATH="/data/adb/modules/$MOD_ID"
+MOD_DIR="$MOD_PATH/system"
+
+rm -rf "$DEBUG_DIR"
+mkdir -p "$TMPDIR" "$DEBUG_DIR"
 # Start debug info
-exec 2>"$MODPATH/debug/post-fs_debug.txt"
+exec 2>"$DEBUG_DIR/post-fs_debug.txt"
 set -x
 
 # Emergency function (creation hidden file to let script know that recreating whole module is needed)
@@ -35,7 +50,7 @@ fi
 
 # if built-in mode is detected, then check if there is a difference between original file and file copied to "original" folder
 if [ "$MODE" = "B" ];then
-	printf "%b\n" "$DLB" | while IFS= read -r i; do
+	[ -n "$DLB" ] && printf "%b\n" "$DLB" | while IFS= read -r i; do
 		j="$MODPATH/original/system$i"
 		if cmp -s "$i" "$j"; then
 			echo "ok"
@@ -60,7 +75,7 @@ fi
 
 # if module mode is detected, then check if there is a difference between original file in base module and file copied to "original" folder
 if [ "$MODE" = "M" ];then
-	printf "%b\n" "$DDLB" | while IFS= read -r i; do
+	[ -n "$DDLB" ] && printf "%b\n" "$DDLB" | while IFS= read -r i; do
 		j="$(echo "$i" | sed "s|/data/adb/modules/[^/]*/|$MODPATH/original/|")"
 		if cmp -s "$i" "$j";then
 			echo "ok"
@@ -103,24 +118,22 @@ if [ -f "$MODPATH/.emergency" ];then
 . "$MODPATH/tuning/main.sh"
 fi
 
-MOD_ID="sv_sndasphere"
-MOD_PATH="/data/adb/modules/$MOD_ID"
-MOD_DIR="$MOD_PATH/system"
-METAMODULE_SYMLINK="/data/adb/metamodule"
-
-# Function to log messages with a timestamp
-log_message() {
-	echo " -- $1 -- "
-}
-
-# Yield to metamodules
-if [ -L "$METAMODULE_SYMLINK" ] || [ -e "$METAMODULE_SYMLINK" ]; then
-	log_message "Metamodule detected. Exiting to avoid conflicts."
-	exit 0
+if [ "$META_ACTIVE" = true ]; then
+	if [ ! -f "$MODPATH/skip_mountify" ] || [ ! -f "$MODPATH/skip_mount" ]; then
+		echo "Active metamodule detected. Making mount skip."
+		touch "$MODPATH/skip_mountify"
+		touch "$MODPATH/skip_mount"
+	else
+		echo "Active metamodule detected. Skip mount files already exist."
+	fi
+elif [ -f "$MODPATH/skip_mountify" ] || [ -f "$MODPATH/skip_mount" ]; then
+	echo "Metamodule disabled or removed. Cleaning up skip files."
+	rm -f "$MODPATH/skip_mountify"
+	rm -f "$MODPATH/skip_mount"
 fi
 
 # Check if module system directory exists
-[ ! -d "$MOD_DIR" ] && { log_message "ERROR: $MOD_DIR not found."; exit 1; }
+[ ! -d "$MOD_DIR" ] && { echo "ERROR: $MOD_DIR not found."; exit 1; }
 
 # Function to resolve the real system path, following symlinks
 resolve_target_path() {
@@ -137,34 +150,45 @@ resolve_target_path() {
 	realpath "$base" 2>/dev/null || echo "$base"
 }
 
-# Main bind mount loop
-for mod_subdir in "$MOD_DIR"/*; do
-	[ -d "$mod_subdir" ] || continue
-	
-	# Extract base name using parameter expansion (faster than basename)
-	logical_base="${mod_subdir##*/}"
-	
-	# Resolve KernelSU Next physical directory location
-	actual_dir="$(realpath "$mod_subdir" 2>/dev/null || echo "$mod_subdir")"
-	
-	log_message "Scanning $logical_base -> $actual_dir"
-	
-	# Find and mount files
-	find "$actual_dir/" -type f 2>/dev/null | while read -r mod_file; do
-		# Extract internal path and reconstruct logical path
-		internal_path="${mod_file#"$actual_dir"/}"
-		sys_file="$(resolve_target_path "$logical_base/$internal_path")"
+SVDLB="$(find "$MODPATH" -path "*/dolby/*" -not -path "$MODPATH/original/*" -not -path "$MODPATH/temp/*" -type f \( -name "*dax*.xml" -o -name "*dap*.xml" \))"
+
+
+
+if [ -n "$SVDLB" ]; then
+	printf "%b\n" "$SVDLB" | while IFS= read -r BINDFILE; do
+		case "$BINDFILE" in
+			"$MODPATH/system/"*)
+				TARGET="${BINDFILE#"$MODPATH"/system}"
+			;;
+			*)
+				TARGET="${BINDFILE#"$MODPATH"}"
+			;;
+		esac
 		
-		if [ -f "$sys_file" ]; then
-			if error_msg=$(mount --bind "$mod_file" "$sys_file" 2>&1); then
-				log_message "SUCCESS: $sys_file"
-			else
-				log_message "ERROR: $sys_file ($error_msg)"
+		if [ -f "$TARGET" ]; then
+			if ! nsenter -t 1 -m -- cmp -s "$BINDFILE" "$TARGET"; then
+				echo " -- Changes detected for $TARGET -- "
+				FILENAME=$(basename "$TARGET")
+				MODNAME=$(basename "$MODPATH")
+				
+				SAFE_TMP="/dev/.${MODNAME}/${FILENAME}"
+				mkdir -p "/dev/.${MODNAME}"
+				nsenter -t 1 -m -- sh -c "cat '$BINDFILE' > '$SAFE_TMP'"
+				
+				# Call our robust permission function
+				# $TARGET is passed so it maps to $MODPATH/system$TARGET inside
+				apply_permissions "$TARGET" "$SAFE_TMP"
+				
+				nsenter -t 1 -m -- umount -l "$TARGET" 2>/dev/null
+				nsenter -t 1 -m -- mount -o bind "$SAFE_TMP" "$TARGET"
+				
+				echo " -- Injected from: $SAFE_TMP to: $TARGET -- "
 			fi
 		else
-			log_message "WARN: Target file $sys_file does not exist in system."
+			echo " -- Warning: Target $TARGET not found, skipping -- "
 		fi
+		
 	done
-done
+fi
 
-log_message "Mount script finished."
+echo "Mount script finished."

@@ -17,7 +17,7 @@ export const state = {
 			dolbymidvlev: "mi-Volume Leveler",
 			dolbymiieq: "mi-IEQ Steering",
 			dolbymisurcomp: "mi-Surround Compressor Steerer",
-			dolbmiadaptvirt: "mi-Adaptive Virtualizer",
+			dolbymiadaptvirt: "mi-Adaptive Virtualizer",
 			dolbymivirtbin: "mi-Virtualizer Binaural Steering",
 			dolbymidialenh: "mi-Dialog Enhancer Steering",
 			headphone_tuning: "Headphone Tuning",
