@@ -361,7 +361,7 @@ apply_virtual_bass() {
 			if [ "$hbasscompstrength" -eq 0 ]; then
 				printf '%s\n' "/endpoint_type=\"$endpoint\"/,/<\/tuning>/s|virtual-bass-compressor-tuning value=\"[^\"]*\"|virtual-bass-compressor-tuning value=\"0,0,0,0,0,0,0\"|g"
 			else
-				printf '%s\n' "/endpoint_type=\"$endpoint\"/,/<\/tuning>/s|virtual-bass-compressor-tuning value=\"[^\"]*\"|virtual-bass-compressor-tuning value=\"1,$((hbasscompstrength*16)),-96,96,32,25,50\"|g"
+				printf '%s\n' "/endpoint_type=\"$endpoint\"/,/<\/tuning>/s|virtual-bass-compressor-tuning value=\"[^\"]*\"|virtual-bass-compressor-tuning value=\"1,$((hbasscompstrength*24)),-192,96,64,25,50\"|g"
 			fi
 
 			# Calculating formula for virtual bass
