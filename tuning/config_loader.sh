@@ -451,7 +451,7 @@ set_regulator_timbre() {
 		esac
 		
 		regoverdrive=$(get_value "HREGOVERDRIVE" 0)
-		eval "export hregoverdrive=$((regoverdrive * 32))"
+		eval "export hregoverdrive=$((regoverdrive * 48))"
 	fi
 }
 

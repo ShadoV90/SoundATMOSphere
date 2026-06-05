@@ -6,26 +6,6 @@ mount -o rw,remount /data
 # shellcheck source=./utils.sh
 . "$MODPATH/tuning/utils.sh"
 
-meta_check
-
-if [ "$META_ACTIVE" = true ]; then
-    TMPDIR="/dev/.sv_sndasphere/temp"
-	if [ "$IS_FLASHING" = "true" ]; then
-		DEBUG_DIR="/data/adb/modules_update/sv_sndasphere/debug"
-	else
-    	DEBUG_DIR="/data/adb/modules/sv_sndasphere/debug"
-	fi
-    LOCK_FILE="/dev/.sv_sndasphere/.action_lock"
-else
-    TMPDIR="$MODPATH/temp"
-    DEBUG_DIR="$MODPATH/debug"
-    LOCK_FILE="$MODPATH/.action_lock"
-fi
-
-mkdir -p "$TMPDIR" "$DEBUG_DIR"
-exec 2>"$DEBUG_DIR/main_or_emergency_debug.txt"
-set -x
-
 install_file() {
 	local src_file="$1"
 	local rel_path target_path backup_path local_backup
@@ -51,17 +31,6 @@ install_file() {
 		fi
 	fi
 }
-
-for DIR in "$MODPATH/"*; do
-	[ -d "$DIR" ] || continue
-	dirname="${DIR##*/}"
-	case "$dirname" in
-		vendor|product|odm|oem|system_ext|my_*|mi_ext)
-			mkdir -p "$MODPATH/system"
-			mv "$DIR" "$MODPATH/system/"
-			;;
-	esac
-done
 
 perms() {
 	echo " "
@@ -133,9 +102,36 @@ builtinmode() {
 	fi
 }
 
-set +x
-check_tamp
-set -x
+meta_check
+
+if [ "$META_ACTIVE" = true ]; then
+    TMPDIR="/dev/.sv_sndasphere/temp"
+	if [ "$IS_FLASHING" = "true" ]; then
+		DEBUG_DIR="/data/adb/modules_update/sv_sndasphere/debug"
+	else
+    	DEBUG_DIR="/data/adb/modules/sv_sndasphere/debug"
+	fi
+    LOCK_FILE="/dev/.sv_sndasphere/.action_lock"
+else
+    TMPDIR="$MODPATH/temp"
+    DEBUG_DIR="$MODPATH/debug"
+    LOCK_FILE="$MODPATH/.action_lock"
+fi
+
+mkdir -p "$TMPDIR" "$DEBUG_DIR"
+exec 2>"$DEBUG_DIR/main_or_emergency_debug.txt"
+
+
+for DIR in "$MODPATH/"*; do
+	[ -d "$DIR" ] || continue
+	dirname="${DIR##*/}"
+	case "$dirname" in
+		vendor|product|odm|oem|system_ext|my_*|mi_ext)
+			mkdir -p "$MODPATH/system"
+			mv "$DIR" "$MODPATH/system/"
+			;;
+	esac
+done
 
 echo " -- This module have two modes -- "
 sleep 0.75

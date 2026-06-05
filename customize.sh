@@ -50,11 +50,8 @@ fi
 
 export IS_FLASHING=true
 
-set +x
-
 # If everything is okay, then proceed with tuning process
 if grep -q "^author=ShadoV90$" "$MODPATH/module.prop" && grep -q "^name=SoundATMOSphere$" "$MODPATH/module.prop"; then
-	set -x
 	if [ -f "$MODPATH/tuning/main.sh" ]; then
 		. "$MODPATH/tuning/main.sh"
 	else

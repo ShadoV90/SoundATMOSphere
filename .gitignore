@@ -22,6 +22,7 @@ misc.xml
 deploymentTargetDropDown.xml
 render.experimental.xml
 send_test.sh
+send_test.ps1
 # Keystore files
 *.jks
 *.keystore

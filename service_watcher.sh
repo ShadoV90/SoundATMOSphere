@@ -3,6 +3,86 @@ MODPATH=${0%/*}
 
 . "$MODPATH/tuning/utils.sh"
 
+# Checking for boot complete
+boottest() {
+	local timeout1=60
+	while [ "$(getprop sys.boot_completed)" != 1 ] && [ "$timeout1" -gt 0 ]; do
+		sleep 1
+		timeout1=$((timeout1 - 1))
+	done
+	
+	if [ "$timeout1" -eq 0 ]; then
+		echo " -- System boot_complete prop wasn't set to 1 -- "
+		exit 1
+	else
+		echo " -- System boot completed - Proceed -- "
+		BOOTCOMPLETE=1
+	fi
+}
+
+check_service() {
+	local SRV SRV_NAME PID
+	
+	for SRV in $DLBSERV; do
+		if [ -s "$SRV" ]; then
+			SRV_NAME=$(basename "$SRV")
+			PID=$(pidof "$SRV_NAME")
+			
+			if [ -z "$PID" ]; then
+				# Service is down, increment fail counter
+				FAIL_COUNT=$((FAIL_COUNT + 1))
+				
+				if [ "$FAIL_COUNT" -ge "$MAX_FAILS" ]; then
+					echo " -- CRITICAL: Service failed to start $MAX_FAILS times in a row. Aborting watcher! -- " >> "$DEBUG_DIR/watcher.txt"
+					exit 1
+				fi
+				
+				echo " -- Service '$SRV_NAME' seems to be down! (Consecutive fails: $FAIL_COUNT) -- " >> "$DEBUG_DIR/watcher.txt"
+				if [ "$BUILTIN" = true ]; then
+					sleep 5
+				else
+					sleep 1
+				fi
+				restart_service "$SRV" &
+			else
+				# Service is up and running normally, reset the fail counter
+				FAIL_COUNT=0
+			fi
+		fi
+	done
+}
+
+# Checking for dolby service files
+servicetest() {
+	local BIN_PATHS="/vendor/bin/hw /system/bin/hw /odm/bin/hw /system_ext/bin /product/bin"
+	
+	# shellcheck disable=SC2086
+	DLBSERV=$(find $BIN_PATHS -type f \( -name '*dms*' -o -name '*dolby*' \) 2>/dev/null)
+	
+	if [ -z "$DLBSERV" ]; then
+		echo " -- No Dolby service BINARIES found - Watcher have nothing to do in this case. Exiting. -- "
+		exit 1
+	else
+		echo " -- Dolby service binaries found! - Proceed -- "
+		DOLBYSERVICE=1
+	fi
+}
+
+restart_service() {
+	local srv_path="$1"
+	local srv_name PID_RECHECK
+	srv_name=$(basename "$srv_path")
+	PID_RECHECK=$(pidof "$srv_name")
+	
+	if [ -z "$PID_RECHECK" ]; then
+		echo " -- restarting service: $srv_name -- " >> "$DEBUG_DIR/watcher.txt"
+		# Detaching process from shell
+		su -c "setsid '$srv_path' > /dev/null 2>&1 &"
+	else
+		echo " -- It seems service was restarted by system. No additional action required. -- " >> "$DEBUG_DIR/watcher.txt"
+	fi
+}
+
 meta_check
 
 if [ "$META_ACTIVE" = true ]; then
@@ -33,38 +113,6 @@ DLBSERV=""
 FAIL_COUNT=0
 MAX_FAILS=10
 
-# Checking for boot complete
-boottest() {
-	timeout1=60
-	while [ "$(getprop sys.boot_completed)" != 1 ] && [ "$timeout1" -gt 0 ]; do
-		sleep 1
-		timeout1=$((timeout1 - 1))
-	done
-	
-	if [ "$timeout1" -eq 0 ]; then
-		echo " -- System boot_complete prop wasn't set to 1 -- "
-		exit 1
-	else
-		echo " -- System boot completed - Proceed -- "
-		BOOTCOMPLETE=1
-	fi
-}
-
-# Checking for dolby service files
-servicetest() {
-	BIN_PATHS="/vendor/bin/hw /system/bin/hw /odm/bin/hw /system_ext/bin /product/bin"
-	
-	# shellcheck disable=SC2086
-	DLBSERV=$(find $BIN_PATHS -type f \( -name '*dms*' -o -name '*dolby*' \) 2>/dev/null | grep -v "c2@")
-	
-	if [ -z "$DLBSERV" ]; then
-		echo " -- No Dolby service BINARIES found - Watcher have nothing to do in this case. Exiting. -- "
-		exit 1
-	else
-		echo " -- Dolby service binaries found! - Proceed -- "
-		DOLBYSERVICE=1
-	fi
-}
 
 # Launching functions
 boottest
@@ -72,51 +120,11 @@ servicetest
 
 # Main watcher logic
 if [ "$BOOTCOMPLETE" -eq 1 ] && [ "$DOLBYSERVICE" -eq 1 ]; then
-	restart_service() {
-		srv_path="$1"
-		srv_name=$(basename "$srv_path")
-		PID_RECHECK=$(pidof "$srv_name")
-		
-		if [ -z "$PID_RECHECK" ]; then
-			echo " -- restarting service: $srv_name -- " >> "$DEBUG_DIR/watcher.txt"
-			# Detaching process from shell
-			su -c "setsid '$srv_path' > /dev/null 2>&1 &"
-		else
-			echo " -- It seems service was restarted by system. No additional action required. -- " >> "$DEBUG_DIR/watcher.txt"
-		fi
-	}
 	
 	set +x
 
-	check_service() {
-		for SRV in $DLBSERV; do
-			if [ -s "$SRV" ]; then
-				SRV_NAME=$(basename "$SRV")
-				PID=$(pidof "$SRV_NAME")
-				
-				if [ -z "$PID" ]; then
-					# Service is down, increment fail counter
-					FAIL_COUNT=$((FAIL_COUNT + 1))
-					
-					if [ "$FAIL_COUNT" -ge "$MAX_FAILS" ]; then
-						echo " -- CRITICAL: Service failed to start $MAX_FAILS times in a row. Aborting watcher! -- " >> "$DEBUG_DIR/watcher.txt"
-						exit 1
-					fi
-					
-					echo " -- Service '$SRV_NAME' seems to be down! (Consecutive fails: $FAIL_COUNT) -- " >> "$DEBUG_DIR/watcher.txt"
-					if [ "$BUILTIN" = true ]; then
-						sleep 5
-					else
-						sleep 1
-					fi
-					restart_service "$SRV" &
-				else
-					# Service is up and running normally, reset the fail counter
-					FAIL_COUNT=0
-				fi
-			fi
-		done
-	}
+	COUNTER=0
+	CONTROLNUMBER=1
 	
 	# Main watcher loop
 	while true; do
@@ -142,5 +150,12 @@ if [ "$BOOTCOMPLETE" -eq 1 ] && [ "$DOLBYSERVICE" -eq 1 ]; then
 			continue
 		fi
 		check_service
+		COUNTER=$((COUNTER+1))
+		
+		if [ "$COUNTER" -ge 100 ];then
+			echo " -- Control number: $CONTROLNUMBER (100 WakeState updates done) -- " >> "$DEBUG_DIR/watcher.txt"
+			CONTROLNUMBER=$((CONTROLNUMBER+1))
+			COUNTER=0
+		fi
 	done
 fi
